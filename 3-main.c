@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include "sort.h"
 
-void quick_sort(int *array, size_t size);
-
 /**
  * main - Entry point
  *
@@ -19,5 +17,5 @@ int main(void)
     quick_sort(array, n);
     printf("\n");
     print_array(array, n);
-    return 0;
+    return (0);
 }

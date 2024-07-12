@@ -1,5 +1,4 @@
 #include "sort.h"
-#include <stdio.h>
 
 /**
  * swap - Swaps two integers in an array
@@ -8,11 +7,9 @@
  */
 void swap(int *a, int *b)
 {
-	int temp;
-
-	temp = *a;
-	*a = *b;
-	*b = temp;
+    int temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
 /**
@@ -25,31 +22,47 @@ void swap(int *a, int *b)
  */
 int lomuto_partition(int *array, int low, int high, size_t size)
 {
-	int pivot;
-	int i;
-	int j;
+    int pivot = array[high];
+    int i = low - 1;
 
-	pivot = array[high];
-	i = low - 1;
+    for (int j = low; j < high; j++)
+    {
+        if (array[j] < pivot)
+        {
+            i++;
+            if (i != j)
+            {
+                swap(&array[i], &array[j]);
+                print_array(array, size);
+            }
+        }
+    }
 
-	for (j = low; j <= high - 1; j++)
-	{
-		if (array[j] <= pivot)
-		{
-			i++;
-			if (i != j)
-			{
-				swap(&array[i], &array[j]);
-				print_array(array, size);
-			}
-		}
-	}
-	if ((i + 1) != high)
-	{
-		swap(&array[i + 1], &array[high]);
-		print_array(array, size);
-	}
-	return (i + 1);
+    if (array[high] < array[i + 1])
+    {
+        swap(&array[i + 1], &array[high]);
+        print_array(array, size);
+    }
+
+    return (i + 1);
+}
+
+/**
+ * lomuto_sort - Helper function for recursive sorting using Lomuto partition
+ * @array: Array to be sorted
+ * @low: Starting index of the partition to be sorted
+ * @high: Ending index of the partition to be sorted
+ * @size: Size of the array
+ */
+void lomuto_sort(int *array, int low, int high, size_t size)
+{
+    if (low < high)
+    {
+        int pivot_index = lomuto_partition(array, low, high, size);
+
+        lomuto_sort(array, low, pivot_index - 1, size);
+        lomuto_sort(array, pivot_index + 1, high, size);
+    }
 }
 
 /**
@@ -59,21 +72,8 @@ int lomuto_partition(int *array, int low, int high, size_t size)
  */
 void quick_sort(int *array, size_t size)
 {
-	int low;
-	int high;
-	int pivot_index;
+    if (size < 2)
+        return;
 
-	if (size < 2)
-		return;
-
-	low = 0;
-	high = size - 1;
-
-	pivot_index = lomuto_partition(array, low, high, size);
-
-	if (pivot_index > low + 1)
-		quick_sort(array, pivot_index);
-
-	if (pivot_index < high - 1)
-		quick_sort(array + pivot_index + 1, size - pivot_index - 1);
+    lomuto_sort(array, 0, size - 1, size);
 }
